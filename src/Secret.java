@@ -69,6 +69,7 @@ public class Secret {
 
 
     public void displayShares(PartSecret[]shares) {
+        System.out.println("Les parts générées sont : ");
         for(int i=0; i<shares.length; i++){
             System.out.println(shares[i]);
         }
@@ -100,7 +101,7 @@ public class Secret {
             secret = nbpremier.add(secret).add(tmp).mod(nbpremier);
         }
 
-        System.out.println("Notre secret: " + secret);
+        System.out.println("Le secret: " + secret);
 
         return secret;
     }
@@ -136,9 +137,11 @@ public class Secret {
 
     public PartSecret[] addShares(PartSecret[] shares, int qte){
 
+        this.nbTotalPart += qte;
+
         BigInteger secret = getSecret(shares);
 
-        PartSecret[] newshares = new PartSecret[shares.length+qte];
+        PartSecret[] newshares = new PartSecret[nbTotalPart];
 
         for(int i = 0; i<shares.length; i++){
             newshares[i] = shares[i];
@@ -157,6 +160,13 @@ public class Secret {
         displayShares(newshares);
 
         return newshares;
+    }
+
+    public PartSecret[] updateSharesThreshold(PartSecret[] shares, int nbMinPart){
+        this.nbMinPart = nbMinPart;
+
+        BigInteger secret = getSecret(shares);
+        return generateShares(secret);
     }
 
 }
