@@ -8,6 +8,7 @@ public class Secret {
     private int nbMinPart;
     private int nbTotalPart;
     private BigInteger[] coefficients;
+    private BigInteger secret;
 
     public Secret(int nbbits, int nbMinPart, int nbTotalPart){
 
@@ -29,6 +30,7 @@ public class Secret {
             secret = new BigInteger(max.bitLength(), new SecureRandom());
         } while (secret.compareTo(min)==-1 || secret.compareTo(max) >= 0);
 
+        this.secret = secret;
         return secret;
     }
 
@@ -99,6 +101,14 @@ public class Secret {
             BigInteger value = shares[i].getY();
             BigInteger tmp = value.multiply(numerateur) . multiply(moduloInverse(denominateur, nbpremier));
             secret = nbpremier.add(secret).add(tmp).mod(nbpremier);
+        }
+
+        try{
+            if(secret.compareTo(this.secret) != 0)
+                throw new Exception();
+        } catch (Exception e) {
+            System.out.println("Le secret ne peut pas être reconstruit avec ces parts.");
+            System.exit(1);
         }
 
         System.out.println("Le secret: " + secret);

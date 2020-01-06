@@ -13,17 +13,58 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("SHAMIR SECRET SHARING");
-        System.out.println("");
-
+        System.out.println();
         System.out.println("INFORMATIONS POUR LA GENERATION D'UN SECRET");
         System.out.print("Nombre de bits : ");
-        nbbits = scanner.nextInt();
+
+            while (true) {
+                try {
+                    nbbits = scanner.nextInt();
+                    if(nbbits<=0)
+                        throw new NonPositiveInteger();
+                    break;
+                } catch (java.util.InputMismatchException e) {
+                    System.out.print("Indiquer un nombre de bits correct : ");
+                    scanner.nextLine();
+                } catch(NonPositiveInteger e){
+                    System.out.print(e.getMessage());
+                    scanner.nextLine();
+                }
+            }
+
+
 
         System.out.print("Nombre de parts minimum pour reconstituer le secret : ");
-        nbminparts = scanner.nextInt();
 
-        System.out.print("Nombre total de parts : ");
-        nbtotalparts = scanner.nextInt();
+        while(true) {
+            try {
+                nbminparts = scanner.nextInt();
+                if(nbminparts<=0)
+                    throw new NonPositiveInteger();
+                break;
+            } catch (java.util.InputMismatchException e) {
+                System.out.print("Indiquer un nombre de parts minimum correct : ");
+                scanner.nextLine();
+            } catch (NonPositiveInteger e){
+                System.out.print(e.getMessage());
+                scanner.nextLine();
+            }
+        }
+
+            System.out.print("Nombre total de parts : ");
+            while (true) {
+                try {
+                    nbtotalparts = scanner.nextInt();
+                    if(nbtotalparts<nbminparts)
+                        throw new Exception();
+                    break;
+                } catch (java.util.InputMismatchException e) {
+                    System.out.print("Indiquer un nombre total de parts correct : ");
+                    scanner.nextLine();
+                } catch(Exception e){
+                    System.out.print("Indiquer un nombre supérieur au nombre minimum de part : ");
+                }
+            }
 
         System.out.println();
         System.out.println("-----------------------------------");
@@ -47,7 +88,17 @@ public class Main {
         System.out.println("AJOUT DE PARTS");
         System.out.println();
         System.out.print("Nombre de parts à ajouter : ");
-        qte = scanner.nextInt();
+
+        while(true) {
+            try {
+                qte = scanner.nextInt();
+                break;
+            } catch (java.util.InputMismatchException e) {
+
+                System.out.print("Indiquer un nombre de part correct : ");
+                scanner.nextLine();
+            }
+        }
 
 
         shares = secret.addShares(shares,qte);
@@ -58,7 +109,17 @@ public class Main {
         System.out.println("MODIFICATION DU SEUIL");
         System.out.println();
         System.out.print("Nouveau nombre de parts minimum : ");
-        qte = scanner.nextInt();
+
+        while(true) {
+            try {
+                qte = scanner.nextInt();
+                break;
+            } catch (java.util.InputMismatchException e) {
+
+                System.out.print("Indiquer un nombre de part correct : ");
+                scanner.nextLine();
+            }
+        }
 
         shares = secret.updateSharesThreshold(shares, qte);
 
