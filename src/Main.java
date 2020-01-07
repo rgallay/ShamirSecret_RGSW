@@ -10,10 +10,18 @@ public class Main {
         int nbtotalparts;
         int qte;
 
+
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("SHAMIR SECRET SHARING");
         System.out.println();
+
+
+        /*
+        ----------------------------------------------------------------------------------------------------------------
+        GENERATION DU SECRET
+        ----------------------------------------------------------------------------------------------------------------
+         */
         System.out.println("INFORMATIONS POUR LA GENERATION D'UN SECRET");
         System.out.print("Nombre de bits : ");
 
@@ -73,11 +81,26 @@ public class Main {
         Secret secret = new Secret(nbbits,nbminparts,nbtotalparts);
 
         BigInteger secretvalue = secret.generateSecret();
+
+
+
+        /*
+        ----------------------------------------------------------------------------------------------------------------
+        GENERATION DES PARTS PERMETTANT LA RECONSTRUCTION DU SECRET
+        ----------------------------------------------------------------------------------------------------------------
+         */
         PartSecret[] shares = secret.generateShares(secretvalue);
 
         System.out.println();
         System.out.println("-----------------------------------");
         System.out.println();
+
+
+        /*
+        ----------------------------------------------------------------------------------------------------------------
+        RECONSTRUCTION DU SECRET
+        ----------------------------------------------------------------------------------------------------------------
+         */
         System.out.println("RECONSTITUTION DU SECRET");
 
         BigInteger secretReconstitue = secret.getSecret(shares);
@@ -85,6 +108,14 @@ public class Main {
         System.out.println();
         System.out.println("-----------------------------------");
         System.out.println();
+
+
+
+        /*
+        ----------------------------------------------------------------------------------------------------------------
+        AJOUTS DE PARTS
+        ----------------------------------------------------------------------------------------------------------------
+         */
         System.out.println("AJOUT DE PARTS");
         System.out.println();
         System.out.print("Nombre de parts à ajouter : ");
@@ -100,12 +131,19 @@ public class Main {
             }
         }
 
-
         shares = secret.addShares(shares,qte);
 
         System.out.println();
         System.out.println("-----------------------------------");
         System.out.println();
+
+
+
+        /*
+        ----------------------------------------------------------------------------------------------------------------
+        MODIFICATION DU SEUIL
+        ----------------------------------------------------------------------------------------------------------------
+         */
         System.out.println("MODIFICATION DU SEUIL");
         System.out.println();
         System.out.print("Nouveau nombre de parts minimum : ");
@@ -126,10 +164,17 @@ public class Main {
         System.out.println();
         System.out.println("-----------------------------------");
         System.out.println();
+
+
+
+        /*
+        ----------------------------------------------------------------------------------------------------------------
+        RECONSTRUCTION DU SECRET AVEC LE NOUVEAU SEUIL ET LES NOUVELLES PARTS
+        ----------------------------------------------------------------------------------------------------------------
+         */
         System.out.println("RECONSTITUTION DU SECRET AVEC LE NOUVEAU SEUIL / NOUVELLES PARTS");
 
         secretReconstitue = secret.getSecret(shares);
-
 
 
     }

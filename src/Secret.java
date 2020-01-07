@@ -10,13 +10,24 @@ public class Secret {
     private BigInteger[] coefficients;
     private BigInteger secret;
 
+    /**
+     * Constructeur de l'objet secret avec les paramètres nécessaires
+     * @param nbbits
+     * @param nbMinPart
+     * @param nbTotalPart
+     */
     public Secret(int nbbits, int nbMinPart, int nbTotalPart){
-
         this.nbbits = nbbits;
         this.nbMinPart = nbMinPart;
         this.nbTotalPart = nbTotalPart;
     }
 
+    /**
+     * Cette méthode génère un secret aléatoire.
+     * Un nombre premier aléatoire est généré sur la base du nombre de bits donné.
+     * Le secret est généré aléatoirement entre 2^nbbits-1 et le nombre premier
+     * @return
+     */
     public BigInteger generateSecret () {
         nbpremier = BigInteger.probablePrime(nbbits,new SecureRandom());
 
@@ -34,6 +45,13 @@ public class Secret {
         return secret;
     }
 
+    /**
+     * Cette méthode génère les parts permettant de recronstruire le secret rentré en paramètre.
+     * Un coefficient est calculé par rapport au nombre minimum de part permettant de reconstruire le secret.
+     * Le coefficient (degré de la courbe) est utilisé pour le calcul des parts.
+     * @param secret
+     * @return
+     */
     public PartSecret[] generateShares(BigInteger secret) {
 
         BigInteger[] coefficients = new BigInteger[nbMinPart];
@@ -69,7 +87,10 @@ public class Secret {
         return shares;
     }
 
-
+    /**
+     * Cette méthode permet l'affichage des coordonnées des parts permettant de retrouveer le secret
+     * @param shares
+     */
     public void displayShares(PartSecret[]shares) {
         System.out.println("Les parts générées sont : ");
         for(int i=0; i<shares.length; i++){
@@ -77,7 +98,14 @@ public class Secret {
         }
     }
 
-
+    /**
+     * Cette méthode gère la reconstruction du secret en se basant sur l'interpolation de Lagrange.
+     * Elle se base sur l'algorithme d'Euclide étendu et l'inverse multiplicatif.
+     * Si le secret ne peut pas être reconstruit, une exception est levée et le programme s'arrête.
+     *
+     * @param shares
+     * @return
+     */
     public BigInteger getSecret(PartSecret[] shares)
     {
         BigInteger secret = BigInteger.ZERO;
@@ -116,6 +144,15 @@ public class Secret {
         return secret;
     }
 
+
+    /**
+     * Cette méthode permet de calculer l'inverse multiplicatif entre deux BigInteger.
+     * Cette méthode est utilisée pour la reconstruction du secret.
+     * Elle utilise le reste obtenu par le calcul du plus grand diviseur commun (Euclide) (3e case du tableau)
+     * @param denominateur
+     * @param nbpremier
+     * @return
+     */
     public BigInteger moduloInverse(BigInteger denominateur, BigInteger nbpremier)
     {
         BigInteger resultat;
@@ -132,6 +169,13 @@ public class Secret {
         return nbpremier.add(resultat).mod(nbpremier);
     }
 
+    /**
+     * Cette méthode cherche le plus grand diviseur commun entre deux BitInteger.
+     * Elle utilise la récursivité jusqu'à obtenir un reste égal à zéro.
+     * @param a
+     * @param b
+     * @return
+     */
     public BigInteger[] gcd(BigInteger a, BigInteger b)
     {
         if (b.compareTo(BigInteger.ZERO) == 0)
@@ -145,6 +189,15 @@ public class Secret {
         }
     }
 
+    /**
+     * Cette méthode permet de créer des parts supplémentaires sur la base du secret existant.
+     * La méthode commence par reconstruire le secret sur la base des parts existantes.
+     * Le nombre de parts à créer est passé en paramètre.
+     *
+     * @param shares
+     * @param qte
+     * @return
+     */
     public PartSecret[] addShares(PartSecret[] shares, int qte){
 
         this.nbTotalPart += qte;
@@ -172,11 +225,26 @@ public class Secret {
         return newshares;
     }
 
+    /**
+     * Cette méthode permet de modifier le nombre minimum de parts nécessaires pour la reconstruction du secret.
+     * Le secret n'est pas modifié. De nouvelles parts sont créées car le coefficient change (basé sur le nombre minimum de parts).
+     * @param shares
+     * @param nbMinPart
+     * @return
+     */
     public PartSecret[] updateSharesThreshold(PartSecret[] shares, int nbMinPart){
         this.nbMinPart = nbMinPart;
 
         BigInteger secret = getSecret(shares);
         return generateShares(secret);
+    }
+
+    public void setNbpremier (BigInteger nbpremier){
+        this.nbpremier = nbpremier;
+    }
+
+    public void setSecret (BigInteger secret){
+        this.secret = secret;
     }
 
 }
